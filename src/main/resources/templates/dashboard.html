@@ -74,8 +74,21 @@
     <!-- Side bar -->
     <div class="sidebar">
       <h2>Make a Transaction</h2></br>
-      <a>Deposit</a>
-      <a>Withdraw</a>
+      <a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">Deposit</a>
+
+<!--      <p>-->
+<!--        <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">-->
+<!--          Link with href-->
+<!--        </a>-->
+<!--      </p>-->
+      <div class="collapse" id="collapseExample">
+        <div class="card card-body">
+
+        </div>
+      </div>
+
+
+      <a>Withdrawal</a>
       </br></br></br></br>
       <a>Sign Out</a>
 <!--      <form th:action="@{/logout}" method="POST">-->
@@ -96,24 +109,32 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>2020/09/10</td>
-            <td>Deposit</td>
-            <td>50000</td>
+          <tr th:each="transaction, tranStat : ${transactions}">
+             <th scope="row" th:text="${tranStat.count}"></th>
+             <td th:text="${transaction.getCreated_at()}"></td>
+             <td th:text="${transaction.getType()}"></td>
+             <td th:text="${transaction.getAmount()}"></td>
           </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>2020/08/18</td>
-            <td>Withdrawal</td>
-            <td>520000</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td>2020/06/20</td>
-            <td>Deposit</td>
-            <td>80000</td>
-          </tr>
+
+
+<!--          <tr>-->
+<!--            <th scope="row">1</th>-->
+<!--            <td>2020/09/10</td>-->
+<!--            <td>Deposit</td>-->
+<!--            <td>50000</td>-->
+<!--          </tr>-->
+<!--          <tr>-->
+<!--            <th scope="row">2</th>-->
+<!--            <td>2020/08/18</td>-->
+<!--            <td>Withdrawal</td>-->
+<!--            <td>520000</td>-->
+<!--          </tr>-->
+<!--          <tr>-->
+<!--            <th scope="row">3</th>-->
+<!--            <td>2020/06/20</td>-->
+<!--            <td>Deposit</td>-->
+<!--            <td>80000</td>-->
+<!--          </tr>-->
         </tbody>
       </table>
     </div>

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -26,12 +27,6 @@ public class UserController {
         return "index";
     }
 
-    @GetMapping("/dashboard")
-    public String dashboard(HttpSession session) {
-        System.out.println("In dashboard: " + session.getAttribute("user"));
-        return "dashboard";
-    }
-
     @PostMapping("/register")
     public String registerUser(@Valid UserDTO userDTO) {
         userService.registerUser(userDTO);
@@ -40,7 +35,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String loginUser(@Valid UserDTO userDTO, HttpSession session) {
+    public String loginUser(@Valid UserDTO userDTO, HttpSession session, RedirectAttributes redirectAttributes) {
         String response = "";
         UserDTO tempUserDTO = userService.loginUser(userDTO);
         if (tempUserDTO.getEmail().isBlank()) {
@@ -49,6 +44,7 @@ public class UserController {
         } else {
             response = "redirect:/dashboard";
             session.setAttribute("user", tempUserDTO);
+            redirectAttributes.addAttribute("user_id", tempUserDTO.getId());
             System.out.println("Log in success");
         }
         return response;
