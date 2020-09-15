@@ -44,7 +44,7 @@ public class UserController {
         } else {
             response = "redirect:/dashboard";
             session.setAttribute("user", tempUserDTO);
-            redirectAttributes.addAttribute("user_id", tempUserDTO.getId());
+//            redirectAttributes.addFlashAttribute("user_id", tempUserDTO.getId());
             System.out.println("Log in success");
         }
         return response;
