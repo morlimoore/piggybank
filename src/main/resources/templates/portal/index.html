@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+</head>
+<br>
+    <h3>This is the profile page</h3>
+
+    <h4>Username: </h4>
+    <span sec:authentication="name"></span>
+    </br>
+    <h4>Authorities: </h4>
+    <span sec:authentication="principal.authorities"></span>
+
+    <form th:action="@{/logout}">
+        <button type="submit">Logout</button>
+    </form>
+</body>
+</html>
