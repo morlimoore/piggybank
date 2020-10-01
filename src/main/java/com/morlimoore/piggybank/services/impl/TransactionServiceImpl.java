@@ -1,79 +1,55 @@
 package com.morlimoore.piggybank.services.impl;
 
-import com.morlimoore.piggybank.DTO.TransactionFetchDTO;
-import com.morlimoore.piggybank.DTO.TransactionMakeDTO;
 import com.morlimoore.piggybank.DTO.UserDTO;
+import com.morlimoore.piggybank.DTO.UserFromDbDTO;
+import com.morlimoore.piggybank.DTO.UserTransactionDTO;
+import com.morlimoore.piggybank.Exceptions.UserNotFoundException;
 import com.morlimoore.piggybank.entities.Transaction;
 import com.morlimoore.piggybank.entities.User;
-import com.morlimoore.piggybank.repositories.TransactionRepository;
+import com.morlimoore.piggybank.repositories.UserRepository;
+import com.morlimoore.piggybank.services.BankingService;
 import com.morlimoore.piggybank.services.TransactionService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.text.NumberFormat;
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
 
-    private TransactionRepository transactionRepository;
     private ModelMapper modelMapper;
+    private BankingService bankingService;
+    private UserRepository userRepository;
 
-    public TransactionServiceImpl(TransactionRepository transactionRepository,
-                                  ModelMapper modelMapper) {
-        this.transactionRepository = transactionRepository;
+    private TransactionServiceImpl(ModelMapper modelMapper,
+                                   BankingService bankingService,
+                                   UserRepository userRepository) {
         this.modelMapper = modelMapper;
+        this.bankingService = bankingService;
+        this.userRepository = userRepository;
     }
 
-    @Override
-    public List<Transaction> getAllUserTransactions(Long user_id) {
-        List<Transaction> response = transactionRepository.findAllTransactionsByUser(user_id);
-        Collections.reverse(response);
-        return response;
-    }
 
     @Override
-    public void makeTransaction(TransactionMakeDTO transactionMakeDTO, UserDTO userDTO, String type) {
-        Transaction transaction = modelMapper.map(transactionMakeDTO, Transaction.class);
-        User user = modelMapper.map(userDTO, User.class);
-        transaction.setUser(user);
-        if (type.equals("Withdrawal")) {
-            Long balance = getUserAccountBalance(userDTO.getId());
-            transaction.setType("Withdrawal");
-            if (transactionMakeDTO.getAmount() < balance) {
-                transactionRepository.save(transaction);
-            } else {
-                System.out.println("Insufficient balance to withdraw");
+    public void makeTransaction(UserTransactionDTO userTransactionDTO, UserFromDbDTO userDTO, String type) throws UserNotFoundException {
+        if (userTransactionDTO != null && userDTO != null) {
+            Transaction transaction = modelMapper.map(userTransactionDTO, Transaction.class);
+            User user = modelMapper.map(userDTO, User.class);
+
+            if (type.equals("Withdrawal")) {
+                bankingService.withdraw(transaction, user, "By SELF");
+
+            } else if (type.equals("Deposit")) {
+                bankingService.deposit(transaction, user, "By SELF");
+
+            } else if (type.equals("Transfer")) {
+                Optional<User> optional = userRepository.findUserByEmail(userTransactionDTO.getRecipient_email());
+                User recipient = optional.orElseThrow(() -> new UserNotFoundException("Entered email is not a customer"));
+                bankingService.withdraw(transaction, user, "TRF-OUT to " + recipient.getEmail());
+                Transaction transaction2 = new Transaction();
+                transaction2.setAmount(transaction.getAmount());
+                bankingService.deposit(transaction2, recipient, "TRF-IN from " + userDTO.getEmail());
             }
-        } else {
-            transaction.setType("Deposit");
-            transactionRepository.save(transaction);
         }
     }
-
-    public String getUserAccountBalanceFormatted(Long user_id) {
-        NumberFormat numberFormat = NumberFormat.getCurrencyInstance(Locale.UK);
-        return numberFormat.format(getUserAccountBalance(user_id));
-    }
-
-    @Override
-    public Long getUserAccountBalance(Long user_id) {
-        List<Transaction> transactions = getAllUserTransactions(user_id);
-        Long sumOfDeposits = transactionSum(transactions, "Deposit");
-        Long sumOfWithdrawals = transactionSum(transactions, "Withdrawal");
-        return sumOfDeposits - sumOfWithdrawals;
-    }
-
-    private Long transactionSum(List<Transaction> transactions, String transactionType) {
-        Long sum = transactions.stream()
-                .filter(t -> t.getType().equals(transactionType))
-                .map(t -> t.getAmount())
-                .reduce((long) 0, (a, b) -> a + b);
-        return sum;
-    }
-
 }

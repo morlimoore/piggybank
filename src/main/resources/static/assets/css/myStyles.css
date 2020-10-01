@@ -37,27 +37,48 @@
     transform: scale(1.1);
 }
 
-
-/* .text-banner {
-    display: inline-block;
-    margin-left: 8%;
-} */
-
-/* .piggyImage {
-    display: inline-block;
-    width: fit-content;
-} */
-
-/* .piggyImage img {
-    position: relative;
-    left: 25%;
-    width: 50%;
-    filter: invert(79%) sepia(50%) saturate(605%) hue-rotate(23deg) brightness(90%) contrast(84%);
-} */
-
-/* .forms {
-    width: 100%;
+.or-seperator {
+    margin: 50px 0 15px;
+    text-align: center;
+    border-top: 1px solid #e0e0e0;
 }
- */
 
+.or-seperator b {
+    padding: 0 10px;
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+    text-align: center;
+    line-height: 40px;
+    background: #fff;
+    display: inline-block;
+    border: 1px solid #e0e0e0;
+    border-radius: 50%;
+    position: relative;
+    top: -22px;
+    z-index: 1;
+}
 
+.signup-form .hint-text {
+    color: #999;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.text-center {
+    text-align: center!important;
+}
+
+.toast {
+    position: absolute;
+    top: 7%;
+    right: 1%;
+}
+
+.toast span {
+    color: unset;
+    font-size: unset;
+    bottom: unset;
+    left: unset;
+    position: unset;
+}
