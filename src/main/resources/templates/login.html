@@ -9,8 +9,6 @@
     <title>Log In</title>
 </head>
 <body>
-    <div th:if="${param.error}">Invalid username or password</div>
-    <div th:if="${param.logout}">You have been logged out</div>
     <div class="forms">
         <div class="form-box">
           <div class="button-box">
@@ -20,9 +18,11 @@
           </div>
           
           <form th:action="@{/login}" method="POST" id="login" class="input-group">
-            <input type="text" name="email" class="input-field" placeholder="Email Address" required>
+              <div th:if="${param.error}" class="alert alert-danger">Invalid username or password</div>
+              <div th:if="${param.logout}" class="alert alert-danger">You have been logged out</div>
+            <input type="text" name="username" class="input-field" placeholder="Email Address" required>
             <input type="text" name="password" class="input-field" placeholder="Enter password" required>
-            <input type="checkbox" class="check-box"><span>Remember Password</span>
+            <input type="checkbox" class="check-box" name="remember-me"><span>Remember Password</span>
             <button type="submit" class="submit-btn">Log in</button>
           </form>
 

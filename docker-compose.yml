@@ -1,0 +1,22 @@
+#version: "3"
+#
+#services:
+#  piggybank:
+#    image: morlimoore/piggybank:latest
+#    ports:
+#      - "8443:8443"
+#    depends_on:
+#      - mysqldb
+#
+#  mysqldb:
+#    image: mysql:latest
+#
+#    networks:
+#      - piggybank-mysql
+#    environment:
+#      RDB_HOSTNAME: piggybank-mysql
+#      RDB_PORT: 3306
+#      RDB_DB_NAME: piggy_bank_db
+#
+#
+#

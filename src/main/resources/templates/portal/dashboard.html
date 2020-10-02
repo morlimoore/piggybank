@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
   <head>
 
@@ -45,6 +46,7 @@
           </div>
           <div class="col-md-4">
             <ul class="right-icons">
+              <li><a th:href="@{~/}">Home</a></li>
               <li><a href="#"><i class="fa fa-facebook"></i></a></li>
               <li><a href="#"><i class="fa fa-twitter"></i></a></li>
               <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
@@ -78,8 +80,10 @@
       <a data-toggle="collapse" href="#collapseExample1" role="button" aria-expanded="false" aria-controls="collapseExample1">Deposit</a>
       <div class="collapse" id="collapseExample1">
         <div class="card card-body">
-          <form action="#" th:action="@{/deposit}" th:object="${transactionFetchDTO}" method="POST" class="input-group">
+          <form action="#" th:action="@{/deposit}" th:object="${userTransactionDTO}" method="POST" class="input-group">
             <input type="number" th:field="*{amount}" class="input-field" placeholder="Deposit amount" required>
+            </br>
+            <span th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">Amount Error</span>
             <div></div>
             <div></div>
             <div></div>
@@ -92,8 +96,10 @@
       <a data-toggle="collapse" href="#collapseExample2" role="button" aria-expanded="false" aria-controls="collapseExample2">Withdrawal</a>
       <div class="collapse" id="collapseExample2">
         <div class="card card-body">
-          <form action="#" th:action="@{/withdrawal}" th:object="${transactionFetchDTO}" method="POST" class="input-group">
+          <form action="#" th:action="@{/withdrawal}" th:object="${userTransactionDTO}" method="POST" class="input-group">
             <input type="number" th:field="*{amount}" class="input-field" placeholder="Withdrawal amount" required>
+            </br>
+            <span th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">Amount Error</span>
             <div></div>
             <div></div>
             <div></div>
@@ -101,8 +107,30 @@
           </form>
         </div>
       </div>
+
+      <a data-toggle="collapse" href="#collapseExample3" role="button" aria-expanded="false" aria-controls="collapseExample2">Transfer funds</a>
+      <div class="collapse" id="collapseExample3">
+        <div class="card card-body">
+          <form action="#" th:action="@{/transfer}" th:object="${userTransactionDTO}" method="POST" class="input-group">
+            <input type="email" th:field="*{recipient_email}" class="input-field" placeholder="Recipient's email" required>
+            </br>
+            <span th:if="${#fields.hasErrors('recipient_email')}" th:errors="*{recipient_email}">Email Error</span>
+            </br>
+            <input type="number" th:field="*{amount}" class="input-field" placeholder="Transfer amount" required>
+            </br>
+            <span th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">Amount Error</span>
+            <div></div>
+            <div></div>
+            <div></div>
+            <button type="submit" class="start-button">Transfer</button>
+          </form>
+        </div>
+      </div>
       </br></br></br></br>
-      <a>Sign Out</a>
+      <form action="#" th:action="@{/logout}" method="POST" class="input-group">
+        <button type="submit" class="start-button">Sign Out</button>
+      </form>
+
 <!--      <form th:action="@{/logout}" method="POST">-->
 <!--        <input type="submit" value="Sign Out" />-->
 <!--      </form>-->
@@ -118,6 +146,7 @@
             <th scope="col">Date</th>
             <th scope="col">Transaction type</th>
             <th scope="col">Amount</th>
+            <th scoper="col">Remarks</th>
           </tr>
         </thead>
         <tbody>
@@ -126,6 +155,7 @@
              <td th:text="${transaction.getCreated_at()}"></td>
              <td th:text="${transaction.getType()}"></td>
              <td th:text="${transaction.getAmount()}"></td>
+             <td th:text="${transaction.getRemarks()}"></td>
           </tr>
 
 

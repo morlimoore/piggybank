@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 
   <head>
 
@@ -13,7 +14,7 @@
 
     <!-- Bootstrap core CSS -->
     <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
-
+    <link rel="stylesheet" th:href="@{/assets/css/bootstrap-social.css}" type="text/css">
 
 
     <!-- Additional CSS Files -->
@@ -67,14 +68,36 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
-              <li class="nav-item">
-                <a th:href="@{/dashboard}" class="nav-link" data-toggle="modal" data-target="#staticBackdrop">Get Started</a>
+              <li class="nav-item" sec:authorize="isAnonymous()">
+                <a class="nav-link" data-toggle="modal" data-target="#staticBackdrop">Get Started</a>
+              </li>
+              <li class="nav-item" sec:authorize="isAuthenticated()">
+                <a class="nav-link" th:href="@{~/portal/index}">View Dashboard</a>
+              </li>
+              <li class="nav-item" sec:authorize="isAuthenticated()">
+                <a class="nav-link" th:href="@{~/logout}">Log Out</a>
               </li>
             </ul>
           </div>
         </div>
       </nav>
     </header>
+
+<!-- Toast start -->
+    <div th:if="${warning != null}" class="alert alert-warning alert-dismissible fade show toast" role="alert">
+      <strong>Warning:</strong> <span th:text="*{warning}"></span>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <div th:if="${success != null}" class="alert alert-success alert-dismissible fade show toast" role="alert">
+      <strong>Success:</strong> <span th:text="*{success}"></span>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+<!-- Toast end -->
 
     <section class="main container">
         <div class="row m-top-20">
@@ -113,12 +136,31 @@
                       <button type="button" class="toggle-btn" th:onclick="register()">Register</button>
                     </div>
                     
-                    <form id="login" action="#" th:action="@{/login}" th:object="${userDTO}" method="POST" class="input-group">
-                      <input type="text" th:field="*{email}" class="input-field" placeholder="Email Address" required>
-                      <input type="text" th:field="*{password}" class="input-field" placeholder="Enter password" required>
-                      <input type="checkbox" class="check-box"><span>Remember Password</span>
+                    <form id="login" action="#" th:action="@{/login}" method="POST" class="input-group">
+                      <div th:if="${param.error}" class="alert alert-danger">Invalid username or password</div>
+                      <div th:if="${param.logout}" class="alert alert-danger">You have been logged out</div>
+                      <input type="email" name="username" class="input-field" placeholder="Email Address" required>
+                      <input type="password" name="password" class="input-field" placeholder="Enter password" required>
+                      <input type="checkbox" class="check-box" name="remember-me"><span>Remember Password</span>
                       <button type="submit" class="submit-btn">Log in</button>
+<!--                      <br>-->
+<!--                      <div class="or-seperator"><b>or</b></div>-->
+<!--                      <p class="hint-text">Sign up with your social media account or email address</p>-->
+<!--                      <div class="social-btn text-center">-->
+<!--                        <a href="#" class="btn btn-primary btn-lg"><i class="fa fa-facebook"></i> Facebook</a>-->
+<!--                        <a href="#" class="btn btn-info btn-lg"><i class="fa fa-twitter"></i> Twitter</a>-->
+<!--                        <a href="#" class="btn btn-danger btn-lg"><i class="fa fa-google"></i> Google</a>-->
+<!--                      </div>-->
+<!--                      <a th:href="@{~/facebookLogin}" class="submit-btn">Login using Facebook</a>-->
+                        <a th:href="@{~/facebookLogin}" class="btn btn-block btn-social btn-facebook">
+                          <span class="fa fa-facebook"></span> Sign in with Facebook
+                        </a>
+
+                      <a th:href="@{~/portal/index}" class="btn btn-block btn-social btn-google">
+                        <span class="fa fa-google"></span> Sign in with Google
+                      </a>
                     </form>
+
 
                     <form action="#" th:action="@{/register}" th:object="${userDTO}" method="POST" id="register" class="input-group">
                       <input type="text" th:field="*{first_name}" class="input-field" placeholder="First Name" required>
@@ -140,6 +182,7 @@
         </div>
         <!-- Login/Sign Up Modal ends here -->
     </section>
+
 
     <div class="card-deck m-top-10 m-bottom-10">
       <div class="card">

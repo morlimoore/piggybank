@@ -77,7 +77,7 @@
     padding: 10px 30px;
     cursor: pointer;
     display: block;
-    margin: auto;
+    margin: 0 auto 10px;
     /* background: linear-gradient(to right, #ff105f, #ffad06); */
     background: #a4c639;
     border: 0;
@@ -92,8 +92,9 @@
 span {
     color: #777;
     font-size: 12px;
-    bottom: 68px;
-    position: absolute;
+    bottom: -30px;
+    left: 15px;
+    position: relative;
 }
 
 #login {

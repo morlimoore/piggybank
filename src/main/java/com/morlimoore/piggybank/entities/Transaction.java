@@ -30,7 +30,9 @@ public class Transaction {
     @CreationTimestamp
     private LocalDateTime created_at;
 
+    private String remarks;
+
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name="user_id", nullable = false)
     private User user;
 }
