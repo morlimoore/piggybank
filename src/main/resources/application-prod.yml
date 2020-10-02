@@ -14,9 +14,3 @@ spring:
     console:
       settings:
         web-allow-others: true
-
-logging:
-  level:
-    org:
-      hibernate:
-        SQL: DEBUG
