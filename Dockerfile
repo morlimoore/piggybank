@@ -14,4 +14,5 @@ ADD target/piggybank-v1.jar /build/piggybank-v1.jar
 EXPOSE 8443
 
 #Command tells docker to run the java file of type war named piggybank-v1.jar in the container
-ENTRYPOINT ["java", "-jar", "/build/piggybank-v1.jar"]
+#ENTRYPOINT ["java", "-jar", "/build/piggybank-v1.jar"]
+ENTRYPOINT mvn spring-boot:run -Dspring-boot.run.profiles=dev
